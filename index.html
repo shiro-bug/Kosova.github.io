@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kosova — Gjeografia</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#050b14;--text:#eef6ff;--mut:#8fa6bd;--gold:#f2c14e;--blue:#4cc3ff;--green:#3ddc97;--red:#ff6b6b;--vio:#a78bfa;--e:cubic-bezier(.22,1,.36,1);color-scheme:dark}
+html,body{width:100%;height:100%;overflow:hidden}
+body{font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--text)}
+button{font:inherit;color:inherit;cursor:pointer;background:none;border:0}
+button:focus-visible,input:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+#bg{position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse 70% 50% at 20% 0%,rgba(76,195,255,.16),transparent 70%),radial-gradient(ellipse 60% 50% at 100% 100%,rgba(242,193,78,.12),transparent 70%),radial-gradient(ellipse 50% 40% at 0% 100%,rgba(61,220,151,.10),transparent 70%),var(--bg);animation:aur 16s ease-in-out infinite alternate}
+@keyframes aur{to{filter:hue-rotate(25deg) brightness(1.12)}}
+#cv{position:fixed;inset:0;z-index:1;pointer-events:none}
+.ridge{position:fixed;left:0;right:0;bottom:0;height:34vh;z-index:1;pointer-events:none;opacity:.55}
+#app{position:fixed;inset:0;z-index:2;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.tb{height:52px;flex:0 0 52px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;border-bottom:1px solid rgba(255,255,255,.07);background:rgba(5,11,20,.6);backdrop-filter:blur(10px)}
+.logo{font-weight:800;letter-spacing:-.3px}.logo span{color:var(--gold)}
+.chip{padding:5px 11px;border:1px solid rgba(242,193,78,.3);border-radius:999px;font-size:12px;color:var(--gold)}
+.pips{display:flex;gap:4px;justify-content:center;padding:8px 0 0}.pip{width:14px;height:3px;border-radius:9px;background:rgba(255,255,255,.1);transition:.3s}.pip.on{width:24px;background:var(--gold)}
+.screens{position:relative;flex:1;min-height:0}
+.scr{position:absolute;inset:0;overflow:auto;padding:16px clamp(16px,5vw,64px);display:flex;opacity:0;visibility:hidden;transform:translateY(14px);transition:opacity .4s var(--e),transform .4s var(--e),visibility 0s .4s}
+.scr.active{opacity:1;visibility:visible;transform:none;transition-delay:0s}
+.wrap{width:min(1100px,100%);margin:auto;padding:8px 0 20px}
+.c{text-align:center}
+h1{font-size:clamp(48px,9vw,112px);line-height:.92;letter-spacing:-3px;margin:10px 0}
+h2{font-size:clamp(26px,4vw,46px);line-height:1.05;letter-spacing:-1.2px;margin-bottom:8px}
+h3{font-size:16px;margin-bottom:5px}
+.sub{color:var(--mut);line-height:1.65;font-size:15px;max-width:720px;margin:8px 0}.c .sub{margin-inline:auto}
+.k{font-size:12px;color:var(--gold);margin-bottom:8px;font-weight:700}
+.panel{margin-top:14px;padding:15px 18px;border-radius:16px;background:rgba(10,22,40,.78);border:1px solid rgba(76,195,255,.15);color:var(--mut);font-size:14px;line-height:1.65;backdrop-filter:blur(8px)}
+.panel b{color:var(--text)}
+.btn{display:inline-block;margin-top:22px;padding:13px 24px;border-radius:13px;font-weight:800;background:linear-gradient(135deg,#d99a1f,#c0392b);box-shadow:0 10px 30px rgba(217,154,31,.25);transition:transform .25s var(--e)}
+.btn:hover{transform:translateY(-3px)}
+.grid{display:grid;gap:10px;margin-top:14px}.g4{grid-template-columns:repeat(4,1fr)}.g3{grid-template-columns:repeat(3,1fr)}
+.card{padding:16px;border-radius:15px;text-align:left;background:rgba(10,22,40,.8);border:1px solid rgba(255,255,255,.08);transition:transform .25s var(--e),border-color .25s}
+.card:hover,.card.sel{transform:translateY(-4px);border-color:var(--gold)}.card p{color:var(--mut);font-size:12.5px;line-height:1.5}.card .ic{font-size:28px;display:block;margin-bottom:6px}
+.num{font-size:30px;font-weight:800;color:var(--gold);font-variant-numeric:tabular-nums}.lbl{font-size:12px;color:var(--mut)}
+.split{display:grid;grid-template-columns:1.15fr .85fr;gap:14px;align-items:start;margin-top:12px}
+.mapbox{border-radius:20px;border:1px solid rgba(76,195,255,.16);background:rgba(6,16,30,.7);padding:8px}
+svg{display:block;width:100%;height:auto}
+.kos{fill:rgba(61,220,151,.12);stroke:var(--green);stroke-width:2;stroke-linejoin:round}
+.riv{fill:none;stroke:var(--blue);stroke-width:3;stroke-linecap:round;stroke-dasharray:8 6;animation:flow 1.2s linear infinite;cursor:pointer}
+@keyframes flow{to{stroke-dashoffset:-14}}
+.hs{cursor:pointer}.hs circle{fill:var(--gold);stroke:#fff;stroke-width:2;transition:r .2s}.hs:hover circle,.hs.sel circle{r:12}.hs text{fill:#fff;font-size:11px;font-weight:700;paint-order:stroke;stroke:#050b14;stroke-width:3px}
+.hs.pl circle{fill:var(--green)}.hs.lk circle{fill:var(--blue)}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}.tab{padding:8px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.12);font-size:13px;transition:.2s}.tab.on{border-color:var(--gold);color:var(--gold);background:rgba(242,193,78,.1)}
+.info{min-height:150px}.info h3{font-size:20px;color:var(--gold)}
+input[type=range]{width:100%;accent-color:var(--gold);margin:12px 0}
+.sky{height:230px;border-radius:20px;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.1);transition:background .5s}
+.sky .mt{position:absolute;bottom:0;left:0;right:0;height:100%}
+.sky .lvl{position:absolute;left:0;right:0;height:2px;background:var(--gold);box-shadow:0 0 14px var(--gold);transition:bottom .15s}
+.sky .lvl span{position:absolute;right:10px;top:-24px;font-size:13px;font-weight:800;color:var(--gold)}
+.chain{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:12px}.chain span{padding:8px 12px;border-radius:10px;background:rgba(76,195,255,.1);border:1px solid rgba(76,195,255,.3);font-size:13px;opacity:0;transform:translateX(-8px);animation:in .4s var(--e) forwards}.chain i{color:var(--gold);font-style:normal;opacity:0;animation:in .4s forwards}
+@keyframes in{to{opacity:1;transform:none}}
+.bars{display:flex;gap:6px;align-items:flex-end;height:170px;margin-top:10px}.bar{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;font-size:10px;color:var(--mut);height:100%}.bar div{width:100%;border-radius:6px 6px 0 0;transition:.3s var(--e);min-height:3px}.bar.on div{outline:2px solid #fff}
+.q{padding:22px;border-radius:20px;background:rgba(10,22,40,.82);border:1px solid rgba(255,255,255,.1);max-width:680px;margin:14px auto 0;text-align:left}
+.qq{font-size:19px;font-weight:700;margin-bottom:14px}.qo{display:block;width:100%;text-align:left;padding:12px 14px;margin-bottom:7px;border-radius:11px;border:1px solid rgba(255,255,255,.1);background:rgba(5,13,28,.7);font-size:14px;transition:.2s}.qo:hover:not(:disabled){transform:translateX(4px);border-color:var(--gold)}.qo.ok{background:rgba(61,220,151,.15);border-color:var(--green)}.qo.ng{background:rgba(255,107,107,.13);border-color:var(--red)}
+.nav{height:62px;flex:0 0 62px;display:flex;align-items:center;justify-content:center;gap:12px}.nb{width:44px;height:44px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(5,12,26,.8);font-size:18px;transition:.2s}.nb:hover{border-color:var(--gold);transform:translateY(-2px)}.nh{font-size:12px;color:var(--mut);min-width:60px;text-align:center}
+@media(max-width:860px){.g4{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:1fr}.split{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+<style id="v2">
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Public+Sans:wght@400;600;700&display=swap');
+:root{--bg:#0e1612;--text:#f2eee4;--mut:#b9c5bb;--gold:#e5b04a;--blue:#6ec6e6;--green:#8fbf6a}
+body{font-family:"Public Sans",system-ui,sans-serif;background:var(--bg)}
+h1,h2,h3,.logo,.num{font-family:Fraunces,Georgia,serif}
+#bg{animation:none;background:#0e1612 url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='700' height='700' fill='none' stroke='%238fbf6a' stroke-opacity='.12'><path d='M350 120c90-20 190 40 210 130s-30 190-120 230-210 10-250-70S250 140 350 120z'/><path d='M350 160c70-10 150 40 165 110s-25 150-95 185-165 5-195-55S280 170 350 160z'/><path d='M350 200c50 0 110 40 120 90s-20 110-70 140-125 0-145-45 40-185 95-185z'/><path d='M350 245c30 5 70 30 75 65s-15 80-50 95-85-10-95-40 30-125 70-120z'/><path d='M60 60c60-30 140-10 170 40s-10 110-70 130-130-30-130-90 0-60 30-80z'/><path d='M80 90c40-15 95 0 115 35s-5 75-50 90-90-20-90-60 10-50 25-65z'/><path d='M560 520c50-20 110 10 120 60s-30 90-80 100-100-30-100-70 20-70 60-90z'/></svg>") 0 0/700px}
+#cv,.ridge,.k{display:none}
+.tb{background:#0e1612;backdrop-filter:none}
+.scr{transform:none}
+.card,.panel,.q{background:#16221c;border:1px solid rgba(242,238,228,.13);border-radius:10px;backdrop-filter:none}
+.mapbox{background:#0a120f;border:1px solid rgba(242,238,228,.15);border-radius:10px;padding:0;overflow:hidden}
+.card:hover,.card.sel{transform:none;background:#1c2d25;border-color:var(--gold)}
+.btn{background:var(--gold);color:#16120a;box-shadow:none;border-radius:10px}
+.chip{border-color:rgba(242,238,228,.25);color:var(--text);font-variant-numeric:tabular-nums}
+.tab{border-radius:8px}.tab.on{background:var(--gold);color:#16120a;border-color:var(--gold)}
+.qo{background:#101a15}.bar div{border-radius:3px 3px 0 0}
+h1{letter-spacing:-1px;font-weight:700}h1 span{color:inherit!important}h2{letter-spacing:-.5px;font-weight:700}
+.riv{stroke:#6ec6e6;stroke-width:2.4;stroke-dasharray:none;animation:none;pointer-events:stroke}
+.hs circle{r:6;stroke-width:2}.hs:hover circle,.hs.sel circle{r:8}
+.hs path{transition:transform .2s;transform-box:fill-box;transform-origin:center}.hs:hover path,.hs.sel path{transform:scale(1.5)}
+.hs text{font-size:9.5px;fill:#fff;stroke-width:3px}
+.cty circle{r:2.6;fill:#fff}.cty text{font-size:8.5px;fill:#f2eee4;paint-order:stroke;stroke:#0a120f;stroke-width:2.5px}
+</style>
+<style id="v3">
+/* Palette: teal #2ee6c5 + azure #3ea6ff (harmonious), coral #ff5a6e (contrast) */
+:root{--bg:#06121a;--text:#eef9f8;--mut:#b4cbd0;--gold:#2ee6c5;--blue:#3ea6ff;--green:#2ee6c5;--red:#ff5a6e;--coral:#ff5a6e}
+body{background:#06121a}
+#bg{background-color:#06121a;filter:hue-rotate(70deg) brightness(1.3)}
+body::before{content:"";position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse 60% 45% at 12% 0%,rgba(46,230,197,.16),transparent 70%),radial-gradient(ellipse 55% 45% at 100% 100%,rgba(62,166,255,.16),transparent 70%),radial-gradient(ellipse 30% 25% at 90% 8%,rgba(255,90,110,.09),transparent 70%)}
+.tb{background:rgba(6,18,26,.88);border-bottom:1px solid rgba(46,230,197,.18)}
+.logo{font-size:19px}
+.card,.panel,.q{background:linear-gradient(160deg,#0f2530,#0a1a23);border:1px solid rgba(62,166,255,.2);box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.card:hover,.card.sel{background:linear-gradient(160deg,#133240,#0d2230);border-color:#2ee6c5;box-shadow:0 0 0 1px #2ee6c5,0 12px 34px rgba(46,230,197,.18);transform:translateY(-3px)}
+.mapbox{background:#061219;border:1px solid rgba(46,230,197,.3);box-shadow:0 0 0 1px rgba(62,166,255,.15),0 24px 60px rgba(0,0,0,.45)}
+.btn{background:#ff5a6e;color:#1a0509;border-radius:12px;box-shadow:0 10px 28px rgba(255,90,110,.35);font-size:16px;padding:14px 28px}
+.btn:hover{box-shadow:0 14px 36px rgba(255,90,110,.5)}
+.tab{border-color:rgba(62,166,255,.3)}.tab.on{background:#2ee6c5;color:#04211c;border-color:#2ee6c5}
+.chip{border-color:#2ee6c5;color:#2ee6c5}
+.pip.on{background:#2ee6c5;box-shadow:0 0 10px rgba(46,230,197,.6)}
+.nb:hover{border-color:#ff5a6e}
+.panel b,.info h3{color:#2ee6c5}
+.num{color:#ff5a6e;font-size:34px}
+.qo:hover:not(:disabled){border-color:#ff5a6e}.qo.ok{background:rgba(46,230,197,.16);border-color:#2ee6c5}.qo.ng{background:rgba(255,90,110,.16);border-color:#ff5a6e}
+h1{font-size:clamp(52px,9.5vw,118px);line-height:.9}
+h2{font-size:clamp(28px,4.4vw,52px)}
+h2::after{content:"";display:block;width:56px;height:4px;margin-top:12px;border-radius:4px;background:#ff5a6e}.c h2::after{margin-inline:auto}
+#s1 .wrap::before{content:"";display:block;width:240px;height:240px;margin:0 auto 4px;background:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='-6 2 366 376'><path d='M148 8L175 22 207 35 240 40 266 48 280 62 286 80 280 105 290 125 295 138 308 160 325 186 340 205 355 226 345 245 330 258 315 266 300 280 286 293 266 306 245 310 217 319 195 335 167 372 150 365 134 346 120 330 108 314 90 298 69 270 62 255 55 240 40 228 30 213 14 200 2 194 6 180 10 165 30 150 45 135 59 125 70 112 79 106 95 98 108 85 112 65 118 53 128 27z' fill='%232ee6c5' fill-opacity='.14' stroke='%232ee6c5' stroke-width='5' stroke-linejoin='round'/><circle cx='233' cy='170' r='9' fill='%23ff5a6e'/></svg>") center/contain no-repeat;filter:drop-shadow(0 0 24px rgba(46,230,197,.5));animation:float 5s ease-in-out infinite}
+/* map recolor */
+#map>rect{fill:#061219}
+#map g[clip-path]>rect:first-child{fill:#0b3d4d}
+#map ellipse:nth-of-type(1),#map ellipse:nth-of-type(2){fill:#1fbfa5}
+#map ellipse:nth-of-type(3),#map ellipse:nth-of-type(5),#map ellipse:nth-of-type(7){fill:#3b66b0}
+#map ellipse:nth-of-type(4),#map ellipse:nth-of-type(6){fill:#e6f7ff}
+#map ellipse:nth-of-type(8),#map ellipse:nth-of-type(9){fill:#157f8c}
+#map>path[fill=none]{stroke:#2ee6c5;stroke-width:2.2;filter:drop-shadow(0 0 5px #2ee6c5)}
+#map>path[fill="#6ec6e6"]{fill:#3ea6ff}
+.riv{stroke:#6fc4ff;stroke-width:2.6;filter:drop-shadow(0 0 3px #3ea6ff)}
+.hs path{fill:#ff5a6e;stroke:#fff}
+.hs.pl circle{stroke:#2ee6c5}.hs.lk circle{fill:#3ea6ff}
+.hs text{font-size:10px}
+/* climate bars */
+.bar div[style*="#f2c14e"]{background:#ff5a6e!important}.bar div[style*="#4cc3ff"]{background:#3ea6ff!important}.bar div[style*="#3ddc97"]{background:#2ee6c5!important}
+.bar.on div{outline-color:#fff}
+input[type=range]{accent-color:#ff5a6e}
+.sky .lvl{background:#ff5a6e;box-shadow:0 0 14px #ff5a6e}.sky .lvl span{color:#ff5a6e}
+.chain span{background:rgba(62,166,255,.14);border-color:#3ea6ff}.chain i{color:#ff5a6e}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-thumb{background:rgba(46,230,197,.3);border-radius:9px}
+</style>
+<style id="v4">
+:root{--bg:#0b1a14;--text:#f4f1e6;--mut:#c3d0c2;--gold:#a8d86e;--blue:#5cc8c0;--green:#a8d86e;--red:#e48b6f}
+#bg{filter:none;background:linear-gradient(180deg,#0a1c26 0%,#103029 50%,#1c4a34 100%)}
+body::before{background:radial-gradient(ellipse 45% 35% at 85% 6%,rgba(243,217,160,.22),transparent 70%),radial-gradient(ellipse 60% 45% at 10% 0%,rgba(92,200,192,.14),transparent 70%),radial-gradient(ellipse 70% 40% at 50% 100%,rgba(168,216,110,.16),transparent 70%)}
+.ridge{display:block;height:36vh;opacity:1}.ridge path:nth-child(1){fill:#173a2d}.ridge path:nth-child(2){fill:#0f2a20}
+body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:86px;z-index:1;pointer-events:none;background:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='64' height='86'><path d='M32 6 48 40H16zM32 26 54 66H10zM32 50 60 86H4z' fill='%23081a12'/></svg>") repeat-x bottom/64px 86px}
+.tb{background:rgba(9,22,17,.85);border-bottom:1px solid rgba(168,216,110,.2)}
+.card,.panel,.q,.zone{background:linear-gradient(160deg,rgba(24,46,35,.93),rgba(15,32,24,.93));border:1px solid rgba(168,216,110,.22);box-shadow:0 10px 28px rgba(0,0,0,.28)}
+.card:hover,.card.sel{background:linear-gradient(160deg,rgba(32,60,44,.96),rgba(20,42,31,.96));border-color:#a8d86e;box-shadow:0 0 0 1px #a8d86e,0 12px 30px rgba(168,216,110,.16)}
+.btn{background:#a8d86e;color:#10200f;box-shadow:0 10px 26px rgba(168,216,110,.3)}.btn:hover{box-shadow:0 14px 34px rgba(168,216,110,.45)}
+.tab{border-color:rgba(168,216,110,.3)}.tab.on{background:#a8d86e;color:#10200f;border-color:#a8d86e}
+.chip{border-color:#a8d86e;color:#a8d86e}.pip.on{background:#a8d86e;box-shadow:0 0 10px rgba(168,216,110,.55)}
+.nb:hover,.nt:hover{border-color:#a8d86e}
+.panel b,.info h3{color:#a8d86e}.num{color:#f1d9a0}h2::after{background:#a8d86e}
+.qo:hover:not(:disabled){border-color:#a8d86e}.qo.ok{background:rgba(168,216,110,.18);border-color:#a8d86e}.qo.ng{background:rgba(228,139,111,.16);border-color:#e48b6f}
+input[type=range]{accent-color:#a8d86e}
+.sky .lvl{background:#f1d9a0;box-shadow:0 0 14px #f1d9a0}.sky .lvl span{color:#f1d9a0}
+.chain span{background:rgba(92,200,192,.14);border-color:#5cc8c0}.chain i{color:#a8d86e}
+.bar div[style*="#f2c14e"]{background:#e8c36a!important}.bar div[style*="#4cc3ff"]{background:#5cc8c0!important}.bar div[style*="#3ddc97"]{background:#a8d86e!important}
+::-webkit-scrollbar-thumb{background:rgba(168,216,110,.35)}
+#s1 .wrap::before{display:none}
+h1{font-size:clamp(54px,10vw,126px)}.sub{font-size:clamp(16px,1.7vw,20px);max-width:780px}.panel{font-size:clamp(15px,1.5vw,18px)}.card h3{font-size:17px}.card p{font-size:14px}
+.zone{display:flex;gap:24px;align-items:center;flex-wrap:wrap;margin-top:14px;padding:24px;border-radius:14px}
+.zbig{font-family:Fraunces,Georgia,serif;font-size:clamp(44px,8vw,84px);font-weight:700;color:#a8d86e;line-height:1}
+.zt{flex:1;min-width:240px}.zt p{font-size:17px;line-height:1.6;margin:5px 0;color:var(--mut)}.zt b{color:#f4f1e6}
+.nt{height:44px;padding:0 14px;border-radius:12px;border:1px solid rgba(244,241,230,.2);background:rgba(9,22,17,.85);font-size:13px;font-weight:700;transition:.2s}
+#notes{position:fixed;left:50%;transform:translateX(-50%);bottom:70px;width:min(760px,94vw);max-height:44vh;overflow:auto;z-index:20;padding:16px 22px;border-radius:14px;background:rgba(9,22,17,.97);border:1px solid rgba(168,216,110,.45);display:none}
+#notes.show{display:block}#notes b{color:#a8d86e}#notes ol{padding-left:22px;margin-top:6px}#notes li{font-size:17px;line-height:1.55;margin:7px 0}
+.nt{display:none!important}body::after{display:none}
+</style>
+</head>
+<body>
+<div id="bg"></div><canvas id="cv"></canvas>
+<svg class="ridge" viewBox="0 0 1200 300" preserveAspectRatio="none" aria-hidden="true"><path d="M0 300V200l90-60 70 40 110-100 90 90 80-50 120 110 100-120 110 90 90-60 120 80 80-40 140 90v120z" fill="rgba(76,195,255,.06)"/><path d="M0 300V250l120-50 100 40 130-80 110 70 140-90 120 80 130-60 110 60 90-30 150 60v120z" fill="rgba(61,220,151,.07)"/></svg>
+
+<div id="app">
+<div class="tb"><div class="logo">KOSOVA <span>· Gjeografia</span></div><div class="chip" id="cnt">1 / 9</div></div>
+<div class="pips" id="pips"></div>
+<div class="screens">
+
+<!-- 1 -->
+<section class="scr active" id="s1"><div class="wrap c">
+ <div style="font-size:64px">🏔️</div>
+ <h1>KOSOVA<br><span style="color:var(--gold)">nga lart</span></h1>
+ <p class="sub">Reliev, lumenj, liqene, klimë dhe pasuri natyrore: një udhëtim interaktiv nëpër gjeografinë e Kosovës. Kliko, lëviz rrëshqitësit dhe zbuloje vetë.</p>
+ <button class="btn" onclick="go(2)">Fillo udhëtimin →</button>
+</div></section>
+
+<!-- 2 -->
+<section class="scr" id="s2"><div class="wrap">
+ <div class="k">Pozita gjeografike</div><h2>Zemra e Ballkanit Perëndimor</h2>
+ <p class="sub">Kosova nuk ka dalje në det, por lumenjtë e saj derdhen në tri dete të ndryshme. Kliko një fqinj për të parë kufirin.</p>
+ <div class="grid g4" id="facts"></div>
+ <div class="grid g4" id="nbrs"></div>
+ <div class="panel" id="nbout"><b>Kliko një fqinj</b> për të parë çfarë e ndan ose e lidh me Kosovën.</div>
+</div></section>
+
+<!-- 3 -->
+<section class="scr" id="s3"><div class="wrap">
+ <div class="k">Harta interaktive</div><h2>Zbulo hartën e Kosovës</h2>
+ <div class="tabs" id="tabs"><button class="tab on" data-l="all">Të gjitha</button><button class="tab" data-l="rel">⛰️ Reliev</button><button class="tab" data-l="hyd">💧 Hidrografi</button></div>
+ <div class="split">
+  <div class="mapbox"><svg viewBox="0 0 400 360" id="map" role="img" aria-label="Skemë ilustruese e Kosovës">
+   <path class="kos" d="M215 20 265 30 300 70 330 110 350 150 345 190 320 215 335 250 310 290 270 310 235 330 205 335 170 320 140 330 100 300 75 270 45 240 30 210 60 180 50 150 80 120 110 90 150 60 185 35z"/>
+   <g id="rivs"></g><g id="hots"></g></svg>
+   <p style="font-size:11px;color:var(--mut);padding:4px 8px">Skemë ilustruese, jo në shkallë të saktë.</p></div>
+  <div class="panel info" id="mapinfo"><h3>Kliko një pikë ose lumë</h3><p>Pikat e arta janë male, ato jeshile rrafshe, ato blu liqene. Vijat blu janë lumenjtë kryesorë.</p></div>
+ </div>
+</div></section>
+
+<!-- 4 -->
+<section class="scr" id="s4"><div class="wrap">
+ <div class="k">Relievi</div><h2>Nga lugina te bjeshkët</h2>
+ <p class="sub">Lëviz rrëshqitësin nga pika më e ulët (~297 m) te Gjeravica (2.656 m) dhe shiko si ndryshon peizazhi.</p>
+ <div class="sky" id="sky"><svg class="mt" viewBox="0 0 400 230" preserveAspectRatio="none"><path d="M0 230V170l40-30 40 20 60-80 50 50 40-30 50-70 60 90 60-40v140z" fill="#1c3b36"/><path d="M0 230V200l70-40 60 30 70-60 70 50 60-30 70 50v70z" fill="#12281f"/></svg><div class="lvl" id="lvl"><span id="lvlv">297 m</span></div></div>
+ <input type="range" id="alt" min="297" max="2656" value="297" aria-label="Lartësia në metra">
+ <div class="panel" id="altout"></div>
+ <div class="grid g3">
+  <div class="card"><span class="ic">🟩</span><h3>Dy rrafshe të mëdha</h3><p>Rrafshi i Kosovës (lindje) dhe Rrafshi i Dukagjinit (perëndim), rreth 400–600 m lartësi. Këtu jetojnë shumica e banorëve.</p></div>
+  <div class="card"><span class="ic">⛰️</span><h3>Malet e Sharrit</h3><p>Zinxhir i gjatë në jug, me maja mbi 2.500 m dhe shumë liqene akullnajore.</p></div>
+  <div class="card"><span class="ic">🧗</span><h3>Bjeshkët e Nemura</h3><p>Në perëndim, me Gjeravicën, majën më të lartë të Kosovës, dhe Gjeravicën si kufi me Shqipërinë.</p></div>
+ </div>
+</div></section>
+
+<!-- 5 -->
+<section class="scr" id="s5"><div class="wrap">
+ <div class="k">Hidrografia</div><h2>Ku shkojnë ujërat e Kosovës?</h2>
+ <p class="sub">Kosova ndodhet në ujëndarësen e tri deteve. Zgjidh një pellg dhe shiko rrugën e ujit.</p>
+ <div class="grid g3">
+  <button class="card" onclick="basin(0,this)"><span class="ic">🌊</span><h3>Pellgu i Detit të Zi</h3><p>Sitnica, Ibri dhe Morava e Binçës.</p></button>
+  <button class="card" onclick="basin(1,this)"><span class="ic">🌅</span><h3>Pellgu i Adriatikut</h3><p>Drini i Bardhë dhe degët e tij.</p></button>
+  <button class="card" onclick="basin(2,this)"><span class="ic">☀️</span><h3>Pellgu i Egjeut</h3><p>Lepenci, që zbret nga Sharri.</p></button>
+ </div>
+ <div class="chain" id="chain"></div>
+ <div class="panel" id="basout"><b>Kliko një pellg.</b> Lumenjtë e Kosovës derdhen në tri dete të ndryshme.</div>
+ <div class="grid g4" style="margin-top:12px">
+  <div class="card"><span class="ic">🏞️</span><h3>Gazivoda</h3><p>Liqen artificial në Ibër, ndër më të mëdhenjtë e vendit.</p></div>
+  <div class="card"><span class="ic">💦</span><h3>Mirusha</h3><p>Ujëvara dhe kanione të gdhendura nga uji pranë Malishevës.</p></div>
+  <div class="card"><span class="ic">🏔️</span><h3>Liqenet e Sharrit</h3><p>Liqene akullnajore në lartësi të madhe.</p></div>
+  <div class="card"><span class="ic">🕳️</span><h3>Gryka e Rugovës</h3><p>Kanion i thellë pranë Pejës, i vlerësuar si ndër më të gjatët në Evropë.</p></div>
+ </div>
+</div></section>
+
+<!-- 6 -->
+<section class="scr" id="s6"><div class="wrap">
+ <div class="k">Klima</div><h2>Katër stinë të theksuara</h2>
+ <p class="sub">Klimë kontinentale, me ndikim mesdhetar në perëndim dhe klimë alpine në male. Kliko një muaj (vlera të përafërta për Prishtinën).</p>
+ <div class="bars" id="bars"></div>
+ <div class="panel" id="climout"></div>
+</div></section>
+
+<!-- 7 -->
+<section class="scr" id="s7"><div class="wrap">
+ <div class="k">Pasuritë natyrore</div><h2>Çfarë fsheh toka e Kosovës?</h2>
+ <div class="grid g4" id="res"></div>
+ <div class="panel" id="resout"><b>Kliko një kartë</b> për më shumë detaje.</div>
+</div></section>
+
+<!-- 8 -->
+<section class="scr" id="s8"><div class="wrap c">
+ <div class="k">Kuizi</div><h2>Sa mirë e njeh Kosovën?</h2>
+ <div class="q"><div class="lbl" id="qn"></div><div class="qq" id="qq"></div><div id="qo"></div><div id="qf" style="font-weight:700;min-height:22px"></div></div>
+</div></section>
+
+<!-- 9 -->
+<section class="scr" id="s9"><div class="wrap c">
+ <div style="font-size:60px">🇽🇰</div><h2>Kosova: e vogël në sipërfaqe, e madhe në larmi</h2>
+ <p class="sub">Rrafshe pjellore, male mbi 2.500 m, lumenj që ndajnë tri dete dhe klimë me katër stinë. Gjeografia e saj është një nga burimet më të rëndësishme të vendit.</p>
+ <div class="grid g3" style="max-width:820px;margin:18px auto 0">
+  <div class="card"><h3>⛰️ Reliev</h3><p>Rrafshe në mes, male përreth.</p></div>
+  <div class="card"><h3>💧 Ujëra</h3><p>Tri pellge, tri dete.</p></div>
+  <div class="card"><h3>🌦️ Klimë</h3><p>Kontinentale, mesdhetare, alpine.</p></div>
+ </div>
+ <button class="btn" onclick="go(1)">↻ Rifillo</button>
+</div></section>
+
+</div>
+<div class="nav"><button class="nb" onclick="prev()" aria-label="Mbrapa">←</button><span class="nh" id="nh">1</span><button class="nb" onclick="next()" aria-label="Përpara">→</button></div>
+</div>
+
+<script>
+"use strict";
+const T=9;let cur=1;
+const pe=document.getElementById("pips");for(let i=0;i<T;i++){const d=document.createElement("div");d.className="pip";pe.appendChild(d)}
+function ui(){cnt.textContent=cur+" / "+T;nh.textContent=cur;document.querySelectorAll(".pip").forEach((d,i)=>d.classList.toggle("on",i<cur))}
+function go(n){n=Math.max(1,Math.min(T,n));if(n===cur)return;document.getElementById("s"+cur).classList.remove("active");document.getElementById("s"+n).classList.add("active");cur=n;ui();if(n===8&&!qs)quiz()}
+function next(){go(cur<T?cur+1:1)}function prev(){go(cur>1?cur-1:T)}
+addEventListener("keydown",e=>{if(e.target.tagName==="INPUT")return;if(["ArrowRight","ArrowDown"].includes(e.key)){e.preventDefault();next()}if(["ArrowLeft","ArrowUp"].includes(e.key)){e.preventDefault();prev()}});
+
+/* particles */
+const cv=document.getElementById("cv"),cx=cv.getContext("2d");let P=[];
+function rs(){cv.width=innerWidth;cv.height=innerHeight;P=Array.from({length:Math.min(70,innerWidth/18)},()=>({x:Math.random()*cv.width,y:Math.random()*cv.height,r:Math.random()*1.6+.4,v:Math.random()*.25+.05,a:Math.random()}))}
+rs();addEventListener("resize",rs);
+(function t(){cx.clearRect(0,0,cv.width,cv.height);for(const p of P){p.y-=p.v;p.a+=.01;if(p.y<0)p.y=cv.height;cx.fillStyle="rgba(242,193,78,"+(.25+.25*Math.sin(p.a))+")";cx.beginPath();cx.arc(p.x,p.y,p.r,0,7);cx.fill()}requestAnimationFrame(t)})();
+
+/* s2 facts: count up */
+const F=[[10887,"km² sipërfaqja"],[2656,"m Gjeravica (maja më e lartë)"],[297,"m pika më e ulët"],[4,"shtete fqinje"]];
+facts.innerHTML=F.map(f=>`<div class="card"><div class="num" data-t="${f[0]}">0</div><div class="lbl">${f[1]}</div></div>`).join("");
+function count(){document.querySelectorAll("#facts .num").forEach(e=>{const t=+e.dataset.t;let s=0;const id=setInterval(()=>{s+=Math.ceil(t/40);if(s>=t){s=t;clearInterval(id)}e.textContent=s.toLocaleString("sq")},25)})}
+count();
+const N=[["🇦🇱","Shqipëria","Kufi perëndimor dhe jugperëndimor, kryesisht malor: Bjeshkët e Nemura. Drini i Bardhë kalon në Shqipëri."],["🇲🇰","Maqedonia e Veriut","Kufi në jug, përmes Sharrit dhe luginës së Lepencit."],["🇲🇪","Mali i Zi","Kufi në veriperëndim, nëpër Bjeshkët e Nemura."],["🇷🇸","Serbia","Kufi më i gjatë, në veri dhe lindje."]];
+nbrs.innerHTML=N.map((n,i)=>`<button class="card" onclick="nb(${i},this)"><span class="ic">${n[0]}</span><h3>${n[1]}</h3></button>`).join("");
+function nb(i,b){document.querySelectorAll("#nbrs .card").forEach(c=>c.classList.remove("sel"));b.classList.add("sel");nbout.innerHTML="<b>"+N[i][1]+":</b> "+N[i][2]}
+
+/* s3 map */
+const H=[
+{x:70,y:215,t:"rel",n:"Bjeshkët e Nemura",d:"Në perëndim. Aty ndodhet Gjeravica (2.656 m), maja më e lartë e Kosovës, afër kufirit me Shqipërinë."},
+{x:205,y:305,t:"rel",n:"Malet e Sharrit",d:"Zinxhir në jug, me maja mbi 2.500 m dhe liqene akullnajore. Shumë i pasur me kullota dhe pyje."},
+{x:240,y:50,t:"rel",n:"Kopaoniku (pjesa jugore)",d:"Mal në veri, i shtrirë mes Kosovës dhe Serbisë, i pasur me minerale."},
+{x:150,y:145,t:"rel",n:"Drenica",d:"Zonë kodrinore në mes, mes dy rrafsheve të mëdha."},
+{x:290,y:150,t:"rel",n:"Gollaku",d:"Zonë kodrinore në lindje të Rrafshit të Kosovës."},
+{x:105,y:240,t:"pl",n:"Rrafshi i Dukagjinit",d:"Në perëndim, rreth 400–500 m. Zonë bujqësore e rëndësishme, e përshkuar nga Drini i Bardhë."},
+{x:225,y:170,t:"pl",n:"Rrafshi i Kosovës",d:"Në qendër dhe lindje, rreth 500–600 m. Aty ndodhin Prishtina, Mitrovica dhe Ferizaji."},
+{x:285,y:75,t:"lk",n:"Liqeni i Gazivodës",d:"Liqen artificial në Ibër, në veri. Shërben për ujë dhe energji."}];
+const R=[
+{p:"M120 200C110 230 100 260 78 292",n:"Drini i Bardhë",d:"Rrjedh nëpër Rrafshin e Dukagjinit dhe del në Shqipëri. Derdhet në Adriatik. Lumi më i rëndësishëm i pjesës perëndimore."},
+{p:"M232 262C220 205 225 130 238 70",n:"Sitnica",d:"Rrjedh nga jugu në veri nëpër Rrafshin e Kosovës dhe i bashkohet Ibrit afër Mitrovicës."},
+{p:"M238 68C245 52 262 40 300 28",n:"Ibri",d:"Rrjedh në veri dhe del në Serbi. Pjesë e pellgut të Detit të Zi."},
+{p:"M215 300C240 312 270 306 302 296",n:"Lepenci",d:"Zbret nga Sharri drejt jugut dhe del në Maqedoninë e Veriut. Pjesë e pellgut të Egjeut."},
+{p:"M300 230C320 240 330 250 340 262",n:"Morava e Binçës",d:"Lumë në lindje, që del në Serbi."}];
+const rv=document.getElementById("rivs"),ht=document.getElementById("hots"),NS="http://www.w3.org/2000/svg";
+function show(h,d){mapinfo.innerHTML="<h3>"+h+"</h3><p>"+d+"</p>"}
+R.forEach(r=>{const p=document.createElementNS(NS,"path");p.setAttribute("d",r.p);p.setAttribute("class","riv hyd");p.onclick=()=>show("💧 "+r.n,r.d);rv.appendChild(p)});
+H.forEach(h=>{const g=document.createElementNS(NS,"g");g.setAttribute("class","hs "+h.t+" "+(h.t==="rel"?"rel":"hyd"));g.setAttribute("tabindex","0");g.innerHTML=`<circle cx="${h.x}" cy="${h.y}" r="8"/><text x="${h.x+13}" y="${h.y+4}">${h.n}</text>`;g.onclick=()=>{document.querySelectorAll(".hs").forEach(x=>x.classList.remove("sel"));g.classList.add("sel");show(h.n,h.d)};g.onkeydown=e=>{if(e.key==="Enter")g.onclick()};ht.appendChild(g)});
+document.querySelectorAll("#tabs .tab").forEach(b=>b.onclick=()=>{document.querySelectorAll("#tabs .tab").forEach(x=>x.classList.remove("on"));b.classList.add("on");const l=b.dataset.l;document.querySelectorAll("#map .rel,#map .hyd").forEach(e=>{e.style.display=(l==="all"||e.classList.contains(l))?"":"none"})});
+// plains are relief too
+document.querySelectorAll(".hs.pl").forEach(e=>e.classList.add("rel"));
+
+/* s4 altitude */
+const Z=[[500,"Lugina dhe rrafshe","Zona e banuar dhe bujqësore: grurë, misër, pemishte. Këtu ndodhin qytetet kryesore.","#1d4e5f","#0d2a38"],[1000,"Kodra dhe male të ulëta","Pyje gjetherënëse (ahu, lisi), kullota dhe fshatra malore.","#2b5a4a","#10303a"],[2000,"Male të larta","Pyje halorë, kullota verore dhe klimë më e freskët.","#3a5f78","#12283f"],[3000,"Bjeshkë alpine","Livadhe alpine, shkëmbinj dhe dëborë për muaj të tërë. Gjeravica arrin 2.656 m.","#5f6f8a","#1a2338"]];
+function setAlt(){const v=+alt.value;const z=Z.find(z=>v<=z[0]);sky.style.background="linear-gradient(180deg,"+z[4]+","+z[3]+")";const pct=(v-297)/(2656-297)*88+4;lvl.style.bottom=pct+"%";lvlv.textContent=v.toLocaleString("sq")+" m";altout.innerHTML="<b>"+z[1]+":</b> "+z[2]}
+alt.oninput=setAlt;setAlt();
+
+/* s5 basins */
+const B=[["Sitnica","Ibri","Morava","Danubi","Deti i Zi"],["Drini i Bardhë","Drini","Adriatiku"],["Lepenci","Vardari","Deti Egje"]];
+const BT=["Pjesa më e madhe e Kosovës qendrore dhe veriore i përket këtij pellgu, nëpërmjet Sitnicës dhe Ibrit.","Pjesa perëndimore (Dukagjini) kullohet nga Drini i Bardhë drejt Adriatikut.","Një pjesë e vogël në jug kullohet nga Lepenci drejt Egjeut."];
+function basin(i,b){document.querySelectorAll("#s5 .g3 .card").forEach(c=>c.classList.remove("sel"));b.classList.add("sel");chain.innerHTML=B[i].map((s,k)=>(k?`<i style="animation-delay:${k*.35-.15}s">→</i>`:"")+`<span style="animation-delay:${k*.35}s">${s}</span>`).join("");basout.innerHTML="<b>"+B[i][B[i].length-1]+":</b> "+BT[i]}
+
+/* s6 climate */
+const M=["Jan","Shk","Mar","Pri","Maj","Qer","Kor","Gus","Sht","Tet","Nën","Dhj"],TT=[-1,1,5,10,15,19,21,21,16,11,5,0],PP=[40,37,43,50,63,65,45,40,40,50,60,55];
+bars.innerHTML=M.map((m,i)=>{const h=(TT[i]+5)*5+10;const c=TT[i]<5?"#4cc3ff":TT[i]<16?"#3ddc97":"#f2c14e";return`<button class="bar" onclick="cm(${i})"><span style="color:#fff;font-size:11px">${TT[i]}°</span><div style="height:${h}px;background:${c}"></div>${m}</button>`}).join("");
+function cm(i){document.querySelectorAll(".bar").forEach((b,k)=>b.classList.toggle("on",k===i));climout.innerHTML="<b>"+M[i]+":</b> rreth "+TT[i]+"°C mesatarisht dhe rreth "+PP[i]+" mm reshje. "+(TT[i]<3?"Dimri është i ftohtë, me dëborë, sidomos në male.":TT[i]>18?"Vera është e ngrohtë dhe e thatë.":"Stinë kalimtare, me reshje të shpeshta.")}
+cm(0);
+
+/* s7 resources */
+const RS=[["⚫","Linjiti","Kosova ka rezerva të mëdha linjiti, burimi kryesor i energjisë elektrike."],["⚙️","Plumbi dhe zinku","Miniera e Trepçës, afër Mitrovicës, ka qenë një nga më të rëndësishmet në rajon."],["🌲","Pyjet","Mbulojnë afërsisht gjysmën e territorit, kryesisht në male."],["🌾","Toka pjellore","Rrafshet Dukagjin dhe Kosovë janë qendra e bujqësisë."],["🦅","Parqe kombëtare","Bjeshkët e Nemura dhe Sharri janë parqe kombëtare me biodiversitet të pasur."],["🕳️","Shpella Gadimja","Shpellë me stalaktite dhe stalagmite pranë Lipjanit."],["♨️","Burime minerale","Burime ujërash minerale dhe termale në disa zona të vendit."],["☀️","Energji e ripërtëritshme","Potencial për diell dhe erë, në zhvillim e sipër."]];
+res.innerHTML=RS.map((r,i)=>`<button class="card" onclick="rr(${i},this)"><span class="ic">${r[0]}</span><h3>${r[1]}</h3></button>`).join("");
+function rr(i,b){document.querySelectorAll("#res .card").forEach(c=>c.classList.remove("sel"));b.classList.add("sel");resout.innerHTML="<b>"+RS[i][1]+":</b> "+RS[i][2]}
+
+/* s8 quiz */
+const Q=[["Cila është maja më e lartë e Kosovës?",["Gjeravica","Guri i Kuq","Maja e Jezercës","Kopaoniku"],0],["Cili lumë rrjedh nëpër Rrafshin e Dukagjinit?",["Sitnica","Drini i Bardhë","Lepenci","Ibri"],1],["Në cilin det derdhet Sitnica (përmes Ibrit, Moravës dhe Danubit)?",["Adriatik","Egje","Deti i Zi","Deti Mesdhe"],2],["Sa shtete fqinje ka Kosova?",["3","4","5","6"],1],["Cili është një liqen artificial në veri?",["Gazivoda","Liqeni i Ohrit","Shkodra","Prespa"],0],["Çfarë klime ka Kosova kryesisht?",["Tropikale","Polare","Kontinentale","Shkretëtirë"],2]];
+let qs=0,qi=0,pts=0;
+function quiz(){qs=1;qi=0;pts=0;sq()}
+function sq(){const q=Q[qi];qn.textContent="Pyetja "+(qi+1)+" / "+Q.length+" · "+pts+" pikë";qq.textContent=q[0];qf.textContent="";qo.innerHTML="";q[1].forEach((t,i)=>{const b=document.createElement("button");b.className="qo";b.textContent=t;b.onclick=()=>aq(i);qo.appendChild(b)})}
+function aq(i){const q=Q[qi],bs=[...qo.children];bs.forEach(b=>b.disabled=true);if(i===q[2]){bs[i].classList.add("ok");pts++;qf.style.color="var(--green)";qf.textContent="✓ Saktë!"}else{bs[i].classList.add("ng");bs[q[2]].classList.add("ok");qf.style.color="var(--red)";qf.textContent="✕ Përgjigjja e saktë: "+q[1][q[2]]}setTimeout(()=>{qi++;if(qi<Q.length)sq();else{qn.textContent="Rezultati final";qq.textContent=(pts>=5?"🏆 Shkëlqyeshëm! ":pts>=3?"👏 Mirë! ":"📚 Provo përsëri! ")+pts+" / "+Q.length;qo.innerHTML="<button class='btn' style='margin-top:6px' onclick='quiz()'>↻ Provo përsëri</button>";qf.textContent=""}},900)}
+ui();
+</script>
+<script>
+(()=>{
+const m=document.getElementById("map"),NS="http://www.w3.org/2000/svg";
+const P="M148 8L175 22 207 35 240 40 266 48 280 62 286 80 280 105 290 125 295 138 308 160 325 186 340 205 355 226 345 245 330 258 315 266 300 280 286 293 266 306 245 310 217 319 195 335 167 372 150 365 134 346 120 330 108 314 90 298 69 270 62 255 55 240 40 228 30 213 14 200 2 194 6 180 10 165 30 150 45 135 59 125 70 112 79 106 95 98 108 85 112 65 118 53 128 27z";
+m.setAttribute("viewBox","-20 -5 400 395");
+m.innerHTML=`<defs><clipPath id="kc"><path d="${P}"/></clipPath><filter id="bl" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="12"/></filter><filter id="nz"><feTurbulence type="fractalNoise" baseFrequency=".05" numOctaves="4" seed="4"/><feColorMatrix values="0 0 0 0 .1 0 0 0 0 .1 0 0 0 0 .05 0 0 0 .9 -.3"/></filter></defs>
+<rect x="-20" y="-5" width="400" height="395" fill="#0a120f"/>
+<g fill="#f2eee4" fill-opacity=".3" font-size="9" letter-spacing="2"><text x="-16" y="250">SHQIPËRI</text><text x="110" y="385">MAQEDONIA E VERIUT</text><text x="-16" y="95">MALI I ZI</text><text x="260" y="25">SERBIA</text></g>
+<g clip-path="url(#kc)"><rect width="360" height="390" fill="#3c5b36"/><g filter="url(#bl)"><ellipse cx="95" cy="215" rx="48" ry="38" fill="#7aa05a"/><ellipse cx="228" cy="175" rx="62" ry="68" fill="#86a862"/><ellipse cx="38" cy="190" rx="38" ry="70" fill="#8d7a58"/><ellipse cx="38" cy="195" rx="20" ry="40" fill="#e7e2d3"/><ellipse cx="185" cy="340" rx="95" ry="30" fill="#8d7a58" transform="rotate(-18 185 340)"/><ellipse cx="170" cy="345" rx="50" ry="14" fill="#e7e2d3" transform="rotate(-18 170 345)"/><ellipse cx="130" cy="72" rx="35" ry="28" fill="#7f7050"/><ellipse cx="275" cy="140" rx="30" ry="40" fill="#5f7d45"/><ellipse cx="320" cy="230" rx="28" ry="30" fill="#6a7f48"/></g><rect width="360" height="390" filter="url(#nz)" style="mix-blend-mode:overlay" opacity=".7"/></g>
+<path d="${P}" fill="none" stroke="#f2eee4" stroke-width="1.6" stroke-linejoin="round"/>
+<path d="M182 100c6-14 14-22 22-30l4 6c-6 8-12 18-16 28z" fill="#6ec6e6"/><g id="rivs"></g><g id="cts"></g><g id="hots"></g>`;
+const R=[["M57 170C85 175 105 180 112 185C122 215 130 230 128 240C115 255 95 262 70 270","Drini i Bardhë","Rrjedh nga Peja nëpër Rrafshin e Dukagjinit dhe del në Shqipëri, drejt Adriatikut."],["M227 255C230 215 225 175 215 150C200 130 185 115 171 109","Sitnica","Rrjedh nga jugu në veri nëpër Rrafshin e Kosovës dhe i bashkohet Ibrit te Mitrovica."],["M171 109C185 92 192 80 175 60C170 52 165 48 165 38","Ibri","Kalon pranë Gazivodës dhe del në Serbi. Pjesë e pellgut të Detit të Zi."],["M188 305C215 300 245 300 266 305","Lepenci","Zbret nga Sharri drejt Maqedonisë së Veriut. Pellgu i Egjeut."],["M290 205C315 215 335 225 352 232","Morava e Binçës","Lumë në lindje që del në Serbi."]];
+const H=[[40,185,"rel","Bjeshkët e Nemura","Në perëndim, me Gjeravicën (2.656 m), maja më e lartë e Kosovës, afër kufirit me Shqipërinë."],[180,320,"rel","Malet e Sharrit","Zinxhir në jug me maja mbi 2.500 m, liqene akullnajore, kullota dhe pyje."],[140,75,"rel","Kopaoniku","Mal në veri, i pasur me minerale."],[150,175,"rel","Drenica","Zonë kodrinore në mes, mes dy rrafsheve të mëdha."],[262,148,"rel","Gollaku","Zonë kodrinore në lindje të Rrafshit të Kosovës."],[92,215,"pl","Rrafshi i Dukagjinit","Rreth 400–500 m. Zonë bujqësore, e përshkuar nga Drini i Bardhë."],[225,190,"pl","Rrafshi i Kosovës","Rreth 500–600 m. Aty ndodhen Prishtina, Mitrovica dhe Ferizaji."],[192,88,"lk","Liqeni i Gazivodës","Liqen artificial në Ibër, në veri. Shërben për ujë dhe energji."]];
+const C=[[233,170,"Prishtinë"],[57,170,"Pejë"],[146,290,"Prizren"],[85,245,"Gjakovë"],[171,109,"Mitrovicë"],[288,223,"Gjilan"],[227,247,"Ferizaj"]];
+const rv=document.getElementById("rivs"),ct=document.getElementById("cts"),ht=document.getElementById("hots");
+R.forEach(r=>{const p=document.createElementNS(NS,"path");p.setAttribute("d",r[0]);p.setAttribute("class","riv hyd");p.onclick=()=>show(r[1],r[2]);rv.appendChild(p)});
+C.forEach(c=>{const g=document.createElementNS(NS,"g");g.setAttribute("class","cty");g.innerHTML=`<circle cx="${c[0]}" cy="${c[1]}"/><text x="${c[0]+5}" y="${c[1]+3}">${c[2]}</text>`;ct.appendChild(g)});
+H.forEach(h=>{const g=document.createElementNS(NS,"g");const hy=h[2]==="lk";g.setAttribute("class","hs "+h[2]+" "+(hy?"hyd":"rel"));g.setAttribute("tabindex","0");const sh=h[2]==="rel"?`<path d="M${h[0]-8} ${h[1]+6}L${h[0]} ${h[1]-8}L${h[0]+8} ${h[1]+6}z" fill="#e5b04a" stroke="#16120a" stroke-width="1.5"/>`:`<circle cx="${h[0]}" cy="${h[1]}" fill="${hy?"#6ec6e6":"none"}" stroke="${hy?"#fff":"#bfe39a"}" stroke-dasharray="${hy?0:"3 2"}"/>`;g.innerHTML=sh+`<text x="${h[0]+11}" y="${h[1]+4}">${h[3]}</text>`;g.onclick=()=>{document.querySelectorAll(".hs").forEach(x=>x.classList.remove("sel"));g.classList.add("sel");show(h[3],h[4])};g.onkeydown=e=>{if(e.key==="Enter")g.onclick()};ht.appendChild(g)});
+mapinfo.innerHTML="<h3>Kliko një pikë ose lumë</h3><p>Trekëndëshat janë male, rrathët jeshilë rrafshe, vija blu lumenj. Harta ndjek formën reale të kufirit, por është e thjeshtuar.</p>";
+m.parentNode.querySelector("p").textContent="Kufiri i përafërt real. Ngjyrat tregojnë lartësinë: jeshile = rrafshe, kafe dhe e bardhë = male.";
+document.querySelectorAll(".ic").forEach(e=>e.remove());
+document.querySelectorAll("#s1 .wrap>div:first-child,#s9 .wrap>div:first-child").forEach(e=>e.remove());
+document.querySelectorAll("h2,h3,.tab").forEach(e=>{if(!e.children.length)e.textContent=e.textContent.replace(/[\p{Extended_Pictographic}\uFE0F]/gu,"").trim()});
+})();
+</script>
+<script>
+(()=>{
+const s=document.getElementById('s3');
+const Z=[['Rrafshi i Dukagjinit','400–500 m','Në perëndim','Drini i Bardhë','Peja, Gjakova','Zona më pjellore: grurë, misër dhe pemishte.'],['Rrafshi i Kosovës','500–600 m','Në qendër dhe në lindje','Lumi Sitnica','Prishtina, Ferizaji, Mitrovica','Këtu jeton pjesa më e madhe e popullsisë.'],['Bjeshkët e Nemura','deri 2.656 m','Në veriperëndim dhe perëndim, në kufi','Gryka e Rugovës','Parku Kombëtar Bjeshkët e Nemura','Këtu është Gjeravica, maja më e lartë e Kosovës.'],['Malet e Sharrit','mbi 2.500 m','Në jug','Liqene akullnajore','Parku Kombëtar Sharri, Brezovica','Pyje, kullota dhe skijim në dimër.']];
+s.innerHTML=`<div class='wrap'><h2>Katër zonat e Kosovës</h2><p class='sub'>Dy rrafshe në mes dhe dy zinxhirë malesh përreth. Kliko një zonë.</p><div class='grid g4' id='zc'>${Z.map((z,i)=>`<button class='card' onclick='zsel(${i})'><h3>${z[0]}</h3><p>${z[1]}</p></button>`).join('')}</div><div class='zone' id='zd'></div></div>`;
+window.zsel=i=>{const z=Z[i];document.querySelectorAll('#zc .card').forEach((c,k)=>c.classList.toggle('sel',k===i));document.getElementById('zd').innerHTML=`<div class='zbig'>${z[1]}</div><div class='zt'><p><b>Ku është:</b> ${z[2]}</p><p><b>Veçoria:</b> ${z[3]}</p><p><b>Shembuj:</b> ${z[4]}</p><p><b>Në një fjali:</b> ${z[5]}</p></div>`};
+zsel(0);
+const NT=[['Sot po ju tregoj gjeografinë e Kosovës: relievin, ujërat, klimën dhe pasuritë natyrore.','Kosova është e vogël, por shumë e larmishme.'],['Kosova ka rreth 10.887 km² dhe nuk ka dalje në det.','Kufizohet me katër shtete: Shqipërinë, Maqedoninë e Veriut, Malin e Zi dhe Serbinë.','Maja më e lartë është Gjeravica me 2.656 m.'],['Kosova ka katër zona kryesore të relievit.','Dy rrafshe në mes: Dukagjini në perëndim, Kosova në lindje.','Dy zinxhirë malesh: Bjeshkët e Nemura dhe Sharri.'],['Lëviz rrëshqitësin: sa më lart, aq më i ftohtë.','Poshtë janë qytetet dhe bujqësia, lart janë bjeshkët dhe dëbora.'],['Kosova ka tri pellgje, pra tri dete.','Drini i Bardhë shkon në Adriatik, Ibri në Detin e Zi, Lepenci në Egje.','Liqeni artificial Gazivoda është në veri.'],['Klima është kontinentale: dimër i ftohtë dhe verë e ngrohtë.','Në perëndim ka ndikim mesdhetar, në male klimë alpine.'],['Pasuri kryesore: linjiti, plumbi dhe zinku i Trepçës, pyjet dhe toka pjellore.','Kemi edhe dy parqe kombëtare.'],['Tani një kuiz i shkurtër për të gjithë klasën.'],['Në përmbledhje: reliev i larmishëm, tri pellgje dhe klimë me katër stinë.','Faleminderit për vëmendjen!']];
+const nt=document.createElement('div');nt.id='notes';document.body.appendChild(nt);
+function un(){nt.innerHTML='<b>Çfarë të thuash:</b><ol>'+NT[cur-1].map(x=>'<li>'+x+'</li>').join('')+'</ol>'}
+const g0=window.go;window.go=function(n){g0(n);un()};un();
+const nav=document.querySelector('.nav');
+const b=document.createElement('button');b.className='nt';b.textContent='Çfarë të thuash';b.onclick=()=>nt.classList.toggle('show');nav.appendChild(b);
+const f=document.createElement('button');f.className='nt';f.textContent='Ekran i plotë';f.onclick=()=>document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen&&document.documentElement.requestFullscreen();nav.appendChild(f);
+addEventListener('keydown',e=>{if(e.key==='n'||e.key==='N')nt.classList.toggle('show')});
+})();
+</script>
+</body>
+</html>
